@@ -1,6 +1,9 @@
 // port-lint: source bigint.rs
 package io.github.kotlinmania.numbigint
 
+import io.github.kotlinmania.numbigint.bigint.plus
+import io.github.kotlinmania.numbigint.bigint.plusAssign
+
 /**
  * A `Sign` is a `BigInt`'s composing element.
  */
@@ -300,7 +303,7 @@ class BigInt internal constructor(
     }
 
     fun inc() {
-        plusAssign(1u)
+        this.plusAssign(1u)
     }
 
     fun normalize() {
@@ -791,34 +794,6 @@ class BigInt internal constructor(
 fun zeroBigInt(): BigInt = BigInt.zero()
 
 fun oneBigInt(): BigInt = BigInt.one()
-
-operator fun BigInt.plus(other: BigInt): BigInt {
-    return when {
-        sign() == Sign.NoSign -> other.clone()
-        other.sign() == Sign.NoSign -> clone()
-        sign() == other.sign() -> BigInt.fromBiguint(sign(), data + other.data)
-        data == other.data -> BigInt.ZERO
-        data > other.data -> BigInt.fromBiguint(sign(), data - other.data)
-        else -> BigInt.fromBiguint(other.sign(), other.data - data)
-    }
-}
-
-operator fun BigInt.plusAssign(other: BigInt) {
-    val next = this + other
-    cloneFrom(next)
-}
-
-operator fun BigInt.plus(other: UInt): BigInt {
-    return this + BigInt.from(other)
-}
-
-operator fun BigInt.plusAssign(other: UInt) {
-    plusAssign(BigInt.from(other))
-}
-
-operator fun UInt.plus(other: BigInt): BigInt {
-    return BigInt.from(this) + other
-}
 
 operator fun BigInt.minus(other: BigInt): BigInt {
     return this + -other
