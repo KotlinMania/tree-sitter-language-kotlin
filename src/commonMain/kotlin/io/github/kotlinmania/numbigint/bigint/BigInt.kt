@@ -514,7 +514,7 @@ class BigInt internal constructor(
      * Returns `self ^ exponent`.
      */
     fun pow(exponent: UInt): BigInt {
-        return powBigInt(this, exponent)
+        return io.github.kotlinmania.numbigint.bigint.pow(this, exponent)
     }
 
     /**
@@ -528,7 +528,7 @@ class BigInt internal constructor(
      * Panics if the exponent is negative or the modulus is zero.
      */
     fun modpow(exponent: BigInt, modulus: BigInt): BigInt {
-        return modpowBigInt(this, exponent, modulus)
+        return io.github.kotlinmania.numbigint.bigint.modpow(this, exponent, modulus)
     }
 
     /**
@@ -933,20 +933,4 @@ fun Long.toBigInt(): BigInt {
 
 fun ULong.toBigInt(): BigInt {
     return BigInt.from(this)
-}
-
-internal fun powBigInt(self: BigInt, exp: UInt): BigInt {
-    if (exp == 0u) {
-        return BigInt.one()
-    }
-    val unsigned = self.data.pow(exp)
-    val sign = if (self.isNegative() && exp % 2u == 1u) Sign.Minus else Sign.Plus
-    return BigInt.fromBiguint(sign, unsigned)
-}
-
-internal fun modpowBigInt(base: BigInt, exponent: BigInt, modulus: BigInt): BigInt {
-    require(!exponent.isNegative()) { "negative exponent" }
-    require(!modulus.isZero()) { "attempt to calculate with zero modulus!" }
-    val unsigned = base.modFloor(modulus).data.modpow(exponent.data, modulus.data)
-    return BigInt.fromBiguint(modulus.sign(), unsigned).modFloor(modulus)
 }
