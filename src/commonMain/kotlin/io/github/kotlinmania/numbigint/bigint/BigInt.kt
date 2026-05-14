@@ -11,6 +11,7 @@ import io.github.kotlinmania.numbigint.bigint.timesAssign
 /**
  * A `Sign` is a `BigInt`'s composing element.
  */
+@kotlinx.serialization.Serializable(with = io.github.kotlinmania.numbigint.bigint.SignSerializer::class)
 enum class Sign {
     Minus,
     NoSign,
@@ -36,6 +37,7 @@ operator fun Sign.times(other: Sign): Sign {
 /**
  * A big signed integer type.
  */
+@kotlinx.serialization.Serializable(with = io.github.kotlinmania.numbigint.bigint.BigIntSerializer::class)
 class BigInt internal constructor(
     private var signValue: Sign,
     internal var data: BigUint,

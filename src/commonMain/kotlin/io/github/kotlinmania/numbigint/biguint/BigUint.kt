@@ -9,6 +9,7 @@ import kotlin.math.sqrt
 /**
  * A big unsigned integer type.
  */
+@kotlinx.serialization.Serializable(with = io.github.kotlinmania.numbigint.biguint.U32Visitor::class)
 class BigUint internal constructor(
     internal val data: MutableList<BigDigit>,
 ) : Comparable<BigUint> {
