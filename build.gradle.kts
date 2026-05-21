@@ -374,13 +374,15 @@ rootProject.extensions.configure<NodeJsRootExtension>("kotlinNodeJs") {
 
 mavenPublishing {
     publishToMavenCentral()
-    signAllPublications()
+    if (project.findProperty("signingInMemoryKey") != null) {
+        signAllPublications()
+    }
 
     coordinates(group.toString(), "tree-sitter-language-kotlin", version.toString())
 
     pom {
         name.set("tree-sitter-language-kotlin")
-        description.set("Kotlin Multiplatform port of tree-sitter/tree-sitter-language - Bash grammar for tree-sitter")
+        description.set("Kotlin Multiplatform port of tree-sitter/tree-sitter-language - the tree-sitter Language type used by tree-sitter grammar bindings")
         inceptionYear.set("2026")
         url.set("https://github.com/KotlinMania/tree-sitter-language-kotlin")
 
