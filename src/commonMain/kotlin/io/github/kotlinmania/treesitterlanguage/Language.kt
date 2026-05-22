@@ -1,4 +1,4 @@
-// port-lint: source src/language.rs
+// port-lint: source language.rs
 package io.github.kotlinmania.treesitterlanguage
 
 /**
@@ -6,17 +6,18 @@ package io.github.kotlinmania.treesitterlanguage
  */
 class LanguageFn private constructor(private val raw: () -> Long) {
 
-    /**
-     * Gets the function wrapped by this [LanguageFn].
-     */
-    fun intoRaw(): () -> Long = raw
-
     companion object {
         /**
          * Creates a [LanguageFn].
          *
-         * Only call this with language functions generated from grammars by the Tree-sitter CLI.
+         * Safety: only call this with language functions generated from grammars by the
+         * Tree-sitter CLI.
          */
         fun fromRaw(f: () -> Long): LanguageFn = LanguageFn(f)
     }
+
+    /**
+     * Gets the function wrapped by this [LanguageFn].
+     */
+    fun intoRaw(): () -> Long = raw
 }
