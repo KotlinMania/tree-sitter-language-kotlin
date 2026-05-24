@@ -1,6 +1,5 @@
 {
   "type": "port",
-  "parity_mode": false,
   "name": "tree-sitter-language-kotlin",
   "source": {
     "path": "tmp/tree-sitter-language/src",
