@@ -1,0 +1,14 @@
+root = true
+
+[*.{kt,kts}]
+indent_size = 4
+max_line_length = off
+
+[src/**/*.kt]
+ktlint_standard_blank-line-before-declaration = disabled
+ktlint_standard_chain-method-continuation = disabled
+ktlint_standard_function-expression-body = disabled
+ktlint_standard_function-signature = disabled
+ktlint_standard_import-ordering = disabled
+ktlint_standard_multiline-expression-wrapping = disabled
+ktlint_standard_no-unused-imports = disabled
