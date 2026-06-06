@@ -15,4 +15,4 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "tree-sitter-language-kotlin"
+rootProject.name = "proc-macro-kotlin"
