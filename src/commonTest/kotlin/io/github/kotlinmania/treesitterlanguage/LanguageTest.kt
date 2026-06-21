@@ -26,10 +26,11 @@ class LanguageTest {
     @Test
     fun fromRawDoesNotInvokeProvider() {
         var invocations = 0
-        val provider = LanguageProvider {
-            invocations += 1
-            0x1234L
-        }
+        val provider =
+            LanguageProvider {
+                invocations += 1
+                0x1234L
+            }
         val languageFn = LanguageFn.fromRaw(provider)
         assertNotNull(languageFn)
         assertEquals(0, invocations, "fromRaw must capture the provider without calling it")
@@ -70,6 +71,7 @@ class LanguageTest {
 
     private companion object {
         const val SAMPLE_GRAMMAR_POINTER: Long = 0x0BADF00DL
+
         fun sampleGrammarPointer(): Long = SAMPLE_GRAMMAR_POINTER
     }
 }

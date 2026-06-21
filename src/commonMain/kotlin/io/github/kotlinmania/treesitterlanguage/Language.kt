@@ -19,8 +19,9 @@ fun interface LanguageProvider {
 /**
  * `LanguageFn` wraps a C function that returns a pointer to a tree-sitter grammar.
  */
-class LanguageFn private constructor(private val raw: LanguageProvider) {
-
+class LanguageFn private constructor(
+    private val raw: LanguageProvider,
+) {
     companion object {
         /**
          * Creates a [LanguageFn].
