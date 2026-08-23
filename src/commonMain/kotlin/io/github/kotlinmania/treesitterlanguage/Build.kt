@@ -2,25 +2,35 @@
 package io.github.kotlinmania.treesitterlanguage
 
 /**
- * Tracking ledger for the upstream Cargo build script. The Rust crate's
- * `build.rs` runs only when the active Cargo `TARGET` triple starts with
- * `wasm32-unknown`; in that case it emits two cargo metadata keys
- * (`wasm-headers` and `wasm-src`) that downstream Tree-sitter grammar
- * crates pick up via `DEP_TREE_SITTER_LANGUAGE_*` environment variables to
- * locate the bundled `wasm/include` and `wasm/src` directories of this
- * crate.
- *
- * Kotlin Multiplatform has no per-source build script of its own. The
- * `tree-sitter-language` crate ships no `wasm/` directory in this
- * repository (the upstream Cargo source tree carries it only for downstream
- * grammar consumers that compile a `tree-sitter.wasm` artifact). The
- * Kotlin port surfaces only the `LanguageFn` trampoline declared in
- * `language.rs`; grammar artifact wiring lives in each per-grammar
- * `tree-sitter-<grammar>-kotlin` repo's Gradle build, not here.
- *
- * This file exists so `ast_distance` can match upstream `build.rs` to a
- * commonMain Kotlin file with the `port-lint: source build.rs` header;
- * its body is documentation only because the translation target is the
- * downstream Gradle build, not Kotlin source in this crate.
+ * Build configuration utilities matching upstream Cargo build script.
  */
-internal object Build
+internal object Build {
+    /**
+     * Emits Cargo metadata for Wasm targets if the target starts with "wasm32-unknown".
+     *
+     * @param target the target triple
+     * @param manifestDir the base directory containing the manifest
+     * @return list of metadata strings
+     */
+    fun configure(target: String?, manifestDir: String?): List<String> {
+        if (target?.startsWith("wasm32-unknown") == true && manifestDir != null) {
+            val wasmHeaders = "$manifestDir/wasm/include"
+            val wasmSrc = "$manifestDir/wasm/src"
+            return listOf(
+                "cargo::metadata=wasm-headers=$wasmHeaders",
+                "cargo::metadata=wasm-src=$wasmSrc",
+            )
+        }
+        return emptyList()
+    }
+
+    /**
+     * Executes the build script logic.
+     */
+    fun main(target: String? = null, manifestDir: String? = null) {
+        val metadata = configure(target, manifestDir)
+        for (line in metadata) {
+            println(line)
+        }
+    }
+}
