@@ -1,4 +1,4 @@
-// port-lint: source language.rs
+// port-lint: tests language.rs
 package io.github.kotlinmania.treesitterlanguage
 
 import kotlin.test.Test
@@ -7,20 +7,7 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertSame
 
 /**
- * Smoke tests for the [LanguageFn] / [LanguageProvider] surface. The upstream
- * Rust `tree-sitter-language` crate ships no `#[test]` or upstream `tests`
- * directory items —
- * its only consumers are grammar crates that bind `unsafe extern "C" fn()` to
- * a `LanguageFn`. The tests below pin the behavior the Kotlin downstream
- * grammar bindings (e.g. `tree-sitter-bash-kotlin`) depend on:
- *
- *  - [LanguageFn.fromRaw] does not invoke the supplied [LanguageProvider].
- *  - [LanguageFn.intoRaw] returns the same instance that was passed in.
- *  - A bare lambda SAM-converts to [LanguageProvider] without an explicit
- *    `LanguageProvider { … }` wrapper.
- *  - Re-roundtripping `fromRaw → intoRaw → fromRaw → intoRaw` preserves the
- *    underlying provider reference (i.e. `LanguageFn` is a transparent box,
- *    matching the upstream `#[repr(transparent)]`).
+ * Tests for the [LanguageFn] and [LanguageProvider] types.
  */
 class LanguageTest {
     @Test
