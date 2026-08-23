@@ -1,4 +1,4 @@
-import XCTest
+import Testing
 import TreeSitterLanguage
 
 // Smoke test for the Kotlin → Swift Export → SPM → swift test pipeline.
@@ -28,8 +28,8 @@ import TreeSitterLanguage
 // Add more meaningful per-API tests below as the Swift Export surface
 // grows. For now the import + a single passing assertion is the
 // canary that the pipeline is green for this repo.
-final class TreeSitterLanguageExportTests: XCTestCase {
-    func testSwiftModuleLoads() throws {
-        XCTAssertTrue(true, "TreeSitterLanguage swift module imported cleanly")
+@Suite struct TreeSitterLanguageExportTests {
+    @Test func testSwiftModuleLoads() {
+        #expect(Bool(true), "TreeSitterLanguage swift module imported cleanly")
     }
 }
