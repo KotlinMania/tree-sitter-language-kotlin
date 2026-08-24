@@ -1,4 +1,4 @@
-// port-lint: source language.rs
+// port-lint: source tree-sitter-language/src/language.rs
 package io.github.kotlinmania.treesitterlanguage
 
 /**
@@ -12,28 +12,28 @@ package io.github.kotlinmania.treesitterlanguage
  * lower to an `Any as Function0<Long>` unchecked cast — see
  * `SWIFT_EXPORT_ROLLOUT.md` gap #8.
  */
-fun interface LanguageProvider {
-    fun call(): Long
+public fun interface LanguageProvider {
+    public fun call(): Long
 }
 
 /**
  * `LanguageFn` wraps a C function that returns a pointer to a tree-sitter grammar.
  */
-class LanguageFn private constructor(
+public class LanguageFn private constructor(
     private val raw: LanguageProvider,
 ) {
-    companion object {
+    public companion object {
         /**
          * Creates a [LanguageFn].
          *
          * Safety: only call this with language functions generated from grammars by the
          * Tree-sitter CLI.
          */
-        fun fromRaw(f: LanguageProvider): LanguageFn = LanguageFn(f)
+        public fun fromRaw(f: LanguageProvider): LanguageFn = LanguageFn(f)
     }
 
     /**
      * Gets the function wrapped by this [LanguageFn].
      */
-    fun intoRaw(): LanguageProvider = raw
+    public fun intoRaw(): LanguageProvider = raw
 }
