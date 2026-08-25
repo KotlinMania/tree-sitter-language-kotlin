@@ -20,8 +20,6 @@ public fun interface LanguageProvider {
 public value class LanguageFn(
     public val provider: LanguageProvider,
 ) {
-    public constructor(rawFunction: () -> Any?) : this(LanguageProvider { rawFunction() })
-
     /**
      * Gets the function wrapped by this [LanguageFn].
      */
@@ -39,7 +37,14 @@ public value class LanguageFn(
          * Only call this with language functions generated from grammars
          * by the Tree-sitter CLI.
          */
-        public fun fromRaw(f: () -> Any?): LanguageFn = LanguageFn(f)
+        @OptIn(kotlin.experimental.ExperimentalObjCRefinement::class)
+        @kotlin.native.HiddenFromObjC
+        public fun fromRaw(f: () -> Any?): LanguageFn = LanguageFn(LanguageProvider { f() })
+
+        /**
+         * Creates a [LanguageFn] from a [LanguageProvider].
+         */
+        public fun fromRaw(provider: LanguageProvider): LanguageFn = LanguageFn(provider)
 
         /**
          * Creates a [LanguageFn] from a [LanguageProvider].
@@ -47,3 +52,4 @@ public value class LanguageFn(
         public fun fromProvider(provider: LanguageProvider): LanguageFn = LanguageFn(provider)
     }
 }
+
