@@ -14,7 +14,7 @@ public fun interface LanguageProvider {
 }
 
 /**
- * Wraps a function that returns a pointer/handle to a tree-sitter grammar.
+ * `LanguageFn` wraps a C function that returns a pointer to a tree-sitter grammar.
  */
 @JvmInline
 public value class LanguageFn(
@@ -23,7 +23,7 @@ public value class LanguageFn(
     public constructor(rawFunction: () -> Any?) : this(LanguageProvider { rawFunction() })
 
     /**
-     * Gets the language handle or pointer produced by this [LanguageFn].
+     * Gets the function wrapped by this [LanguageFn].
      */
     public fun intoRaw(): Any? = provider.getLanguage()
 
@@ -34,9 +34,10 @@ public value class LanguageFn(
 
     public companion object {
         /**
-         * Creates a [LanguageFn] from a raw function.
+         * Creates a [LanguageFn].
          *
-         * Only call this with language functions generated from grammars by the Tree-sitter CLI.
+         * Only call this with language functions generated from grammars
+         * by the Tree-sitter CLI.
          */
         public fun fromRaw(f: () -> Any?): LanguageFn = LanguageFn(f)
 
