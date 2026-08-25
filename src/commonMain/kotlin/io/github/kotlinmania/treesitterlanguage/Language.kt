@@ -1,39 +1,48 @@
 // port-lint: source language.rs
 package io.github.kotlinmania.treesitterlanguage
 
+import kotlin.jvm.JvmInline
+
 /**
- * Adapter for the C function that returns a pointer to a tree-sitter grammar.
- *
- * Defined as a `fun interface` (single-abstract-method) so that lambda and
- * function-reference call sites — e.g. `LanguageFn.fromRaw(::treeSitterBash)` —
- * SAM-convert automatically and stay unchanged. The named nominal type also
- * keeps Kotlin function types (`() -> Long` / `Function0<Long>`) off the
- * public Swift Export bridge surface, which the plugin would otherwise
- * lower to an `Any as Function0<Long>` unchecked cast — see
- * `SWIFT_EXPORT_ROLLOUT.md` gap #8.
+ * Functional interface wrapping a native C function or language provider that returns a pointer to a Tree-sitter grammar.
  */
 public fun interface LanguageProvider {
-    public fun call(): Long
+    /**
+     * Returns the raw language grammar handle or pointer.
+     */
+    public fun getLanguage(): Any?
 }
 
 /**
- * `LanguageFn` wraps a C function that returns a pointer to a tree-sitter grammar.
+ * Wraps a function that returns a pointer/handle to a tree-sitter grammar.
  */
-public class LanguageFn private constructor(
-    private val raw: LanguageProvider,
+@JvmInline
+public value class LanguageFn(
+    public val provider: LanguageProvider,
 ) {
-    public companion object {
-        /**
-         * Creates a [LanguageFn].
-         *
-         * Safety: only call this with language functions generated from grammars by the
-         * Tree-sitter CLI.
-         */
-        public fun fromRaw(f: LanguageProvider): LanguageFn = LanguageFn(f)
-    }
+    public constructor(rawFunction: () -> Any?) : this(LanguageProvider { rawFunction() })
 
     /**
-     * Gets the function wrapped by this [LanguageFn].
+     * Gets the language handle or pointer produced by this [LanguageFn].
      */
-    public fun intoRaw(): LanguageProvider = raw
+    public fun intoRaw(): Any? = provider.getLanguage()
+
+    /**
+     * Invokes the language function.
+     */
+    public operator fun invoke(): Any? = intoRaw()
+
+    public companion object {
+        /**
+         * Creates a [LanguageFn] from a raw function.
+         *
+         * Only call this with language functions generated from grammars by the Tree-sitter CLI.
+         */
+        public fun fromRaw(f: () -> Any?): LanguageFn = LanguageFn(f)
+
+        /**
+         * Creates a [LanguageFn] from a [LanguageProvider].
+         */
+        public fun fromProvider(provider: LanguageProvider): LanguageFn = LanguageFn(provider)
+    }
 }
