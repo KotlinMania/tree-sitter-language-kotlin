@@ -32,17 +32,10 @@ public value class LanguageFn(
 
     public companion object {
         /**
-         * Creates a [LanguageFn].
+         * Creates a [LanguageFn] from a [LanguageProvider].
          *
          * Only call this with language functions generated from grammars
          * by the Tree-sitter CLI.
-         */
-        @OptIn(kotlin.experimental.ExperimentalObjCRefinement::class)
-        @kotlin.native.HiddenFromObjC
-        public fun fromRaw(f: () -> Any?): LanguageFn = LanguageFn(LanguageProvider { f() })
-
-        /**
-         * Creates a [LanguageFn] from a [LanguageProvider].
          */
         public fun fromRaw(provider: LanguageProvider): LanguageFn = LanguageFn(provider)
 
