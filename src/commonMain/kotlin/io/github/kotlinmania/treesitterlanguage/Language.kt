@@ -45,4 +45,3 @@ public value class LanguageFn(
         public fun fromProvider(provider: LanguageProvider): LanguageFn = LanguageFn(provider)
     }
 }
-
