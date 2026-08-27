@@ -1,4 +1,4 @@
-// port-lint: source tree-sitter-language/build.rs
+// port-lint: source build.rs
 package io.github.kotlinmania.treesitterlanguage
 
 /**
