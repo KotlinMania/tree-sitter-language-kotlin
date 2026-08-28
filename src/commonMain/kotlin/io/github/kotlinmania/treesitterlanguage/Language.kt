@@ -21,7 +21,7 @@ public value class LanguageFn(
     public val provider: LanguageProvider,
 ) {
     /**
-     * Gets the function wrapped by this [LanguageFn].
+     * Gets the function wrapped by this [`LanguageFn`].
      */
     public fun intoRaw(): Any? = provider.getLanguage()
 
@@ -32,12 +32,14 @@ public value class LanguageFn(
 
     public companion object {
         /**
-         * Creates a [LanguageFn] from a [LanguageProvider].
+         * Creates a [`LanguageFn`].
+         *
+         * # Safety
          *
          * Only call this with language functions generated from grammars
          * by the Tree-sitter CLI.
          */
-        public fun fromRaw(provider: LanguageProvider): LanguageFn = LanguageFn(provider)
+        public fun fromRaw(f: LanguageProvider): LanguageFn = LanguageFn(f)
 
         /**
          * Creates a [LanguageFn] from a [LanguageProvider].
