@@ -18,12 +18,12 @@ public fun interface LanguageProvider {
  */
 @JvmInline
 public value class LanguageFn(
-    public val provider: LanguageProvider,
+    public val f: LanguageProvider,
 ) {
     /**
      * Gets the function wrapped by this [`LanguageFn`].
      */
-    public fun intoRaw(): Any? = provider.getLanguage()
+    public fun intoRaw(): Any? = f.getLanguage()
 
     /**
      * Invokes the language function.
