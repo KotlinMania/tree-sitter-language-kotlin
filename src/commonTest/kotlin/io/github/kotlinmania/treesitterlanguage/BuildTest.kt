@@ -1,4 +1,4 @@
-// port-lint: tests build.rs
+// port-lint: tests tree-sitter-language/build.rs
 package io.github.kotlinmania.treesitterlanguage
 
 import kotlin.test.Test
