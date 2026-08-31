@@ -1,4 +1,4 @@
-// port-lint: source tree-sitter-language/src/language.rs
+// port-lint: source language.rs
 package io.github.kotlinmania.treesitterlanguage
 
 import kotlin.jvm.JvmInline
