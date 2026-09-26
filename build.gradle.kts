@@ -639,8 +639,16 @@ val webpackVersion: String =
 
 rootProject.extensions.configure<NodeJsEnvSpec>("kotlinNodeJsSpec") { version.set(nodeVersion) }
 rootProject.extensions.configure<WasmNodeJsEnvSpec>("kotlinWasmNodeJsSpec") { version.set(wasmNodeVersion) }
-rootProject.extensions.configure<YarnRootEnvSpec>("kotlinYarnSpec") { version.set(yarnVersion) }
-rootProject.extensions.configure<WasmYarnRootEnvSpec>("kotlinWasmYarnSpec") { version.set(wasmYarnVersion) }
+rootProject.extensions.configure<YarnRootEnvSpec>("kotlinYarnSpec") {
+    version.set(yarnVersion)
+    yarnLockMismatchReport.set(org.jetbrains.kotlin.gradle.targets.js.yarn.YarnLockMismatchReport.WARNING)
+    yarnLockAutoReplace.set(true)
+}
+rootProject.extensions.configure<WasmYarnRootEnvSpec>("kotlinWasmYarnSpec") {
+    version.set(wasmYarnVersion)
+    yarnLockMismatchReport.set(org.jetbrains.kotlin.gradle.targets.js.yarn.YarnLockMismatchReport.WARNING)
+    yarnLockAutoReplace.set(true)
+}
 
 rootProject.extensions.configure<YarnRootExtension>("kotlinYarn") {
     project.properties
@@ -674,6 +682,45 @@ rootProject.extensions.configure<NodeJsRootExtension>("kotlinNodeJs") {
     versions.mocha.version = providers.gradleProperty("node.mocha.version").getOrElse("12.0.0-beta-10")
     versions.kotlinWebHelpers.version = providers.gradleProperty("node.kotlinWebHelpers.version").getOrElse("3.1.0")
 }
+
+// Make kotlinUpgradeYarnLock and kotlinWasmUpgradeYarnLock dependencies in the build process
+// for KotlinJS and other JavaScript/WASM targets so that yarn.lock is always upgraded automatically.
+val jsTasksNeedingYarnLock =
+    setOf(
+        "compileKotlinJs",
+        "compileTestKotlinJs",
+        "jsProcessResources",
+        "jsTestProcessResources",
+        "jsNodeTest",
+        "jsBrowserTest",
+    )
+
+tasks
+    .matching { it.name in jsTasksNeedingYarnLock }
+    .configureEach {
+        dependsOn("kotlinUpgradeYarnLock")
+    }
+
+val wasmTasksNeedingYarnLock =
+    setOf(
+        "compileKotlinWasmJs",
+        "compileTestKotlinWasmJs",
+        "wasmJsProcessResources",
+        "wasmJsTestProcessResources",
+        "wasmJsNodeTest",
+        "wasmJsBrowserTest",
+        "compileKotlinWasmWasi",
+        "compileTestKotlinWasmWasi",
+        "wasmWasiProcessResources",
+        "wasmWasiTestProcessResources",
+        "wasmWasiNodeTest",
+    )
+
+tasks
+    .matching { it.name in wasmTasksNeedingYarnLock }
+    .configureEach {
+        dependsOn("kotlinWasmUpgradeYarnLock")
+    }
 
 // ============================================================================
 // Maven Central publishing — Central Portal, first-party + bespoke upload
@@ -927,15 +974,17 @@ tasks.matching { it.name.contains("GenerateSPMPackage") }.configureEach {
                 ?.asFile
         if (spmDir != null && spmDir.exists()) {
             spmDir.walkTopDown().filter { it.name == "Package.swift" }.forEach { file ->
-                val text = file.readText()
+                var text = file.readText()
                 if (!text.contains("platforms:")) {
-                    file.writeText(
+                    text =
                         text.replaceFirst(
                             Regex("""(let package = Package\s*\(\s*name:\s*"[^"]*",)"""),
-                            "$1\n    platforms: [.macOS(.v14)],",
-                        ),
-                    )
+                            "$1\n    platforms: [.macOS(\"15.0\")],",
+                        )
+                } else if (text.contains(".macOS(.v15)") || text.contains(".macOS(.v14)")) {
+                    text = text.replace(".macOS(.v15)", ".macOS(\"15.0\")").replace(".macOS(.v14)", ".macOS(\"15.0\")")
                 }
+                file.writeText(text)
             }
         }
     }
@@ -982,7 +1031,7 @@ tasks.register("swiftExportSmokeTest") {
                         "CONFIGURATION" to "Debug",
                         "ARCHS" to "arm64",
                         "FRAMEWORKS_FOLDER_PATH" to "Frameworks",
-                        "MACOSX_DEPLOYMENT_TARGET" to "14.0",
+                        "MACOSX_DEPLOYMENT_TARGET" to "15.0",
                         "DEPLOYMENT_TARGET_SETTING_NAME" to "MACOSX_DEPLOYMENT_TARGET",
                     ),
                 )
