@@ -32,4 +32,14 @@ import TreeSitterLanguage
     @Test func testSwiftModuleLoads() {
         #expect(Bool(true), "TreeSitterLanguage swift module imported cleanly")
     }
+
+    @Test func testLanguageFnUsage() {
+        let dummyPointer: Int64 = 0x12345678
+        let provider = languageProvider {
+            return dummyPointer
+        }
+        let fn = LanguageFn(f: provider)
+        #expect(fn.intoRaw() != nil)
+        #expect(fn.callAsFunction() != nil)
+    }
 }
