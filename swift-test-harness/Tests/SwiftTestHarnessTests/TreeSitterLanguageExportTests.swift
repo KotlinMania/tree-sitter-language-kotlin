@@ -39,7 +39,8 @@ import TreeSitterLanguage
             return dummyPointer
         }
         let fn = LanguageFn(f: provider)
-        #expect(fn.intoRaw() != nil)
+        let raw = fn.intoRaw()
+        #expect(raw.call() != nil)
         #expect(fn.callAsFunction() != nil)
     }
 }

@@ -28,9 +28,13 @@ internal object Build {
      * Executes the build script logic.
      */
     fun main(target: String? = null, manifestDir: String? = null) {
-        val metadata = configure(target, manifestDir)
-        for (line in metadata) {
-            println(line)
+        if (target.orEmpty().startsWith("wasm32-unknown")) {
+            val dir = manifestDir ?: return
+            val wasmHeaders = "$dir/wasm/include"
+            val wasmSrc = "$dir/wasm/src"
+
+            println("cargo::metadata=wasm-headers=$wasmHeaders")
+            println("cargo::metadata=wasm-src=$wasmSrc")
         }
     }
 }
