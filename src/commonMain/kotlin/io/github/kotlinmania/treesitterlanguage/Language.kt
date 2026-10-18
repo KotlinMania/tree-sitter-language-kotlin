@@ -11,6 +11,16 @@ public fun interface LanguageProvider {
      * Returns the raw language grammar handle or pointer.
      */
     public fun getLanguage(): Any?
+
+    /**
+     * Calls the language provider to return the raw language grammar handle or pointer.
+     */
+    public fun call(): Any? = getLanguage()
+
+    /**
+     * Invokes the language provider to return the raw language grammar handle or pointer.
+     */
+    public operator fun invoke(): Any? = getLanguage()
 }
 
 /**
@@ -23,12 +33,12 @@ public value class LanguageFn(
     /**
      * Gets the function wrapped by this [`LanguageFn`].
      */
-    public fun intoRaw(): Any? = f.getLanguage()
+    public fun intoRaw(): LanguageProvider = f
 
     /**
      * Invokes the language function.
      */
-    public operator fun invoke(): Any? = intoRaw()
+    public operator fun invoke(): Any? = f.call()
 
     public companion object {
         /**

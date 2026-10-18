@@ -11,7 +11,9 @@ class LanguageTest {
         val dummyGrammar = "tree_sitter_grammar_pointer"
         val langFn = LanguageFn.fromRaw { dummyGrammar }
         assertNotNull(langFn)
-        assertEquals(dummyGrammar, langFn.intoRaw())
+        assertEquals(dummyGrammar, langFn.intoRaw().getLanguage())
+        assertEquals(dummyGrammar, langFn.intoRaw().call())
+        assertEquals(dummyGrammar, langFn.intoRaw()())
         assertEquals(dummyGrammar, langFn())
     }
 
@@ -19,7 +21,9 @@ class LanguageTest {
     fun testLanguageFnFromProvider() {
         val dummyGrammar = 12345L
         val langFn = LanguageFn.fromProvider { dummyGrammar }
-        assertEquals(12345L, langFn.intoRaw())
+        assertEquals(12345L, langFn.intoRaw().getLanguage())
+        assertEquals(12345L, langFn.intoRaw().call())
+        assertEquals(12345L, langFn.intoRaw()())
         assertEquals(12345L, langFn())
     }
 }
