@@ -1,4 +1,4 @@
-=== Deep Analysis: tmp/tree-sitter-language/src (rust) -> src/commonMain/kotlin/io/github/kotlinmania/treesitterlanguage (kotlin) ===
+=== Deep Analysis: tmp/tree-sitter-language/src (rust) -> src/common/commonMain/kotlin/io/github/kotlinmania/treesitterlanguage (kotlin) ===
 
 Scanning source codebase (rust)...
 Codebase: tmp/tree-sitter-language/src (rust)
@@ -6,7 +6,7 @@ Codebase: tmp/tree-sitter-language/src (rust)
   Total imports: 0
 
 Scanning target codebase (kotlin)...
-Codebase: src/commonMain/kotlin/io/github/kotlinmania/treesitterlanguage (kotlin)
+Codebase: src/common/commonMain/kotlin/io/github/kotlinmania/treesitterlanguage (kotlin)
   Files: 4
   Total imports: 7
 
@@ -16,7 +16,7 @@ Computing AST similarities...
 === Codebase Comparison Report ===
 
 Source: tmp/tree-sitter-language/src (1 files)
-Target: src/commonMain/kotlin/io/github/kotlinmania/treesitterlanguage (4 files)
+Target: src/common/commonMain/kotlin/io/github/kotlinmania/treesitterlanguage (4 files)
 Scoring invariant: FnSim is required function body/parameter similarity. Class/type and symbol parity are reported beside it; whole-file shape is diagnostic only.
 
 Matched:   1 files
