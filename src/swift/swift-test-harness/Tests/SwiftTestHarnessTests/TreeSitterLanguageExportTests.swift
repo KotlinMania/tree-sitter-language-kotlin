@@ -1,46 +1,61 @@
 import Testing
 import TreeSitterLanguage
 
-// Smoke test for the Kotlin → Swift Export → SPM → swift test pipeline.
-//
-// The file's mere existence and successful compilation prove three layers
-// of the pipeline:
-//
-//   1. `embedSwiftExportForXcode` produced `TreeSitterLanguage.swiftmodule/`
-//      and the supporting KotlinRuntimeSupport / ExportedKotlinPackages /
-//      KotlinRuntime swiftmodule bundles. If any of them were missing,
-//      `import TreeSitterLanguage` above would fail at compile time.
-//
-//   2. The static archive `libTreeSitterLanguage.a` (produced by the
-//      `linkSwiftExportBinaryDebugStaticMacosArm64` and
-//      `mergeMacosDebugSwiftExportLibraries` tasks) supplied every
-//      `__root____*` and `KotlinError`-related symbol the Swift modules
-//      reference. If the archive were missing or empty, this test
-//      executable would fail to link with "undefined symbols for
-//      architecture arm64".
-//
-//   3. The Kotlin `swiftExport { moduleName = "TreeSitterLanguage" }` and
-//      `flattenPackage = "io.github.kotlinmania.treesitterlanguage"` configuration in
-//      build.gradle.kts produced a module name that's both syntactically
-//      valid as a Swift identifier and reachable from this Package.swift
-//      via the `TreeSitterLanguageLibrary` product.
-//
-// Add more meaningful per-API tests below as the Swift Export surface
-// grows. For now the import + a single passing assertion is the
-// canary that the pipeline is green for this repo.
 @Suite struct TreeSitterLanguageExportTests {
-    @Test func testSwiftModuleLoads() {
-        #expect(Bool(true), "TreeSitterLanguage swift module imported cleanly")
-    }
-
     @Test func testLanguageFnUsage() {
-        let dummyPointer: Int64 = 0x12345678
+        let dummyPointer: Int64 = 0x123456789ABCDEF
+        var calls = 0
         let provider = languageProvider {
+            calls += 1
             return dummyPointer
         }
         let fn = LanguageFn(f: provider)
         let raw = fn.intoRaw()
-        #expect(raw.call() != nil)
-        #expect(fn.callAsFunction() != nil)
+        #expect(calls == 0)
+
+        #expect((raw.getLanguage() as? Int64) == dummyPointer)
+        #expect(calls == 1)
+        #expect((raw.call() as? Int64) == dummyPointer)
+        #expect(calls == 2)
+        #expect((raw.callAsFunction() as? Int64) == dummyPointer)
+        #expect(calls == 3)
+        #expect((fn.callAsFunction() as? Int64) == dummyPointer)
+        #expect(calls == 4)
+    }
+
+    @Test func testLanguageFnFactoriesPreserveProvider() {
+        let dummyPointer: Int64 = 0x123456789ABCDEF
+        var calls = 0
+        let provider = languageProvider {
+            calls += 1
+            return dummyPointer
+        }
+        let fromRaw = LanguageFn.Companion.shared.fromRaw(f: provider)
+        let fromProvider = LanguageFn.Companion.shared.fromProvider(provider: provider)
+        #expect(calls == 0)
+
+        #expect((fromRaw.intoRaw().call() as? Int64) == dummyPointer)
+        #expect(calls == 1)
+        #expect((fromRaw.callAsFunction() as? Int64) == dummyPointer)
+        #expect(calls == 2)
+        #expect((fromProvider.intoRaw().call() as? Int64) == dummyPointer)
+        #expect(calls == 3)
+        #expect((fromProvider.callAsFunction() as? Int64) == dummyPointer)
+        #expect(calls == 4)
+    }
+
+    @Test func testLanguageFnPreservesNilPayload() {
+        var calls = 0
+        let provider = languageProvider {
+            calls += 1
+            return nil
+        }
+        let fn = LanguageFn(f: provider)
+        #expect(calls == 0)
+
+        #expect(fn.intoRaw().call() == nil)
+        #expect(calls == 1)
+        #expect(fn.callAsFunction() == nil)
+        #expect(calls == 2)
     }
 }
