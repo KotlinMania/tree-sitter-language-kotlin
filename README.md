@@ -1,6 +1,6 @@
 # tree-sitter-language-kotlin in Kotlin
 
-[![GitHub link](https://img.shields.io/badge/GitHub-KotlinMania%2Ftree--sitter--bash--kotlin-blue.svg)](https://github.com/KotlinMania/tree-sitter-language-kotlin)
+[![GitHub link](https://img.shields.io/badge/GitHub-KotlinMania%2Ftree--sitter--language--kotlin-blue.svg)](https://github.com/KotlinMania/tree-sitter-language-kotlin)
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.kotlinmania/tree-sitter-language-kotlin)](https://central.sonatype.com/artifact/io.github.kotlinmania/tree-sitter-language-kotlin)
 [![Build status](https://img.shields.io/github/actions/workflow/status/KotlinMania/tree-sitter-language-kotlin/ci.yml?branch=main)](https://github.com/KotlinMania/tree-sitter-language-kotlin/actions)
 
@@ -71,7 +71,7 @@ npm run test:watch
 
 ```kotlin
 dependencies {
-    implementation("io.github.kotlinmania:tree-sitter-language-kotlin:0.1.0")
+    implementation("io.github.kotlinmania:tree-sitter-language-kotlin:0.1.1")
 }
 ```
 
@@ -84,17 +84,16 @@ dependencies {
 
 ### Targets
 
-- macOS arm64
-- Linux x64
-- Windows mingw-x64
-- iOS arm64 / simulator-arm64 (Swift export + XCFramework)
-- JS (browser + Node.js)
-- Wasm-JS (browser + Node.js)
-- Android (API 24+)
+- JVM & Android (API 24+)
+- Android Native (`androidNativeArm64`, `androidNativeX64`)
+- Apple (`macosArm64`, `iosArm64`, `iosSimulatorArm64`, `tvosArm64`, `tvosSimulatorArm64`, `watchosDeviceArm64`, `watchosSimulatorArm64`) + Swift Export (`TreeSitterLanguage`)
+- Linux (`linuxX64`, `linuxArm64`)
+- Windows (`mingwX64`)
+- JS & Wasm (`js`, `wasmJs`, `wasmWasi`)
 
 ### Porting guidelines
 
-See [AGENTS.md](AGENTS.md) and [CLAUDE.md](CLAUDE.md) for translator discipline, port-lint header convention, and Rust → Kotlin idiom mapping.
+See [AGENTS.md](AGENTS.md) for translator discipline, port-lint header convention, and Rust → Kotlin idiom mapping.
 
 ### License
 
